@@ -1,0 +1,81 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.heading {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* STATS ROW */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+/* SECTION */
+.section {
+  width: 100%;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* BOOKINGS GRID */
+.bookingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Search box */
+.searchBox {
+  margin-bottom: 24px;
+}
+
+.searchBox input {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.searchBox input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+}
+
+
+
+/* TABLET */
+@media (max-width: 1024px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bookingGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 16px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2,1fr);
+  }
+}

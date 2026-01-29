@@ -1,0 +1,96 @@
+.wrapper {
+  margin-top: 32px;
+}
+
+.previewLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.invoice {
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  color: #000;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.logo {
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.studioName {
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  outline: none;
+}
+
+.invoiceMeta h2 {
+  margin: 0;
+}
+
+/* Text blocks */
+.business,
+.footer {
+  width: 100%;
+  margin: 12px 0;
+  border: none;
+  resize: none;
+  font-size: 13px;
+  outline: none;
+}
+
+/* Section */
+.section {
+  margin-top: 20px;
+}
+
+.section h4 {
+  margin-bottom: 6px;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.balance td {
+  font-weight: 700;
+}
+
+/* Status */
+.status {
+  margin-top: 20px;
+}
+
+/* Inputs */
+input,
+textarea {
+  font-family: inherit;
+}

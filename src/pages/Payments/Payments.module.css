@@ -1,0 +1,128 @@
+.payments {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.heading {
+  font-size: 22px;
+  margin-bottom: 24px;
+}
+
+/* Card container */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Input */
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+}
+
+/* Suggestions */
+.suggestions {
+  margin-top: 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-main);
+}
+
+.suggestion {
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.suggestion:hover {
+  background-color: var(--bg-card);
+}
+
+.noResult {
+  padding: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Section title */
+.sectionTitle {
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+/* Grid info */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.grid span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.grid p {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Amounts */
+.amounts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.balance p {
+  font-weight: 700;
+}
+
+/* Action */
+.action {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.generate {
+  padding: 12px 28px;
+  border-radius: 8px;
+  background-color: var(--black-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .grid,
+  .amounts {
+    grid-template-columns: 1fr;
+  }
+}

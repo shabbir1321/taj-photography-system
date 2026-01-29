@@ -1,0 +1,159 @@
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border 0.2s ease;
+  max-width: 100%;
+  min-height: 140px;
+}
+
+.card:hover {
+  border-color: var(--gold-primary);
+}
+
+/* Highlight today's booking */
+.today {
+  border-left: 4px solid var(--gold-primary);
+}
+
+/* Client name */
+.name {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  text-transform: uppercase; /* 🔥 THIS LINE */
+  letter-spacing: 0.5px;     /* optional, looks premium */
+}
+
+/* Reason of shoot */
+.reason {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+/* Footer row */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+/* Date */
+.date {
+  color: var(--text-muted);
+}
+
+/* Status */
+.status {
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.pending {
+  color: var(--status-pending);
+}
+
+.paid {
+  color: var(--status-paid);
+}
+
+.advance {
+  color: var(--status-advance);
+}
+
+/* Expanded details */
+.details {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.details p {
+  margin-bottom: 6px;
+}
+
+.details hr {
+  border: none;
+  border-top: 1px solid var(--border-light);
+  margin: 10px 0;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.editForm input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+}
+
+.editActions {
+  display: flex;
+  gap: 10px;
+}
+
+.save {
+  background: var(--black-primary);
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.cancel {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.payment {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment input {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  width: 140px;
+}
+
+.payBtn {
+  width: fit-content;
+  padding: 6px 14px;
+  background: var(--black-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

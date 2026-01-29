@@ -1,0 +1,116 @@
+/* CARD CONTENT WRAPPER */
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.heading {
+  margin-bottom: 24px;
+}
+
+/* GRID FOR CARDS */
+.form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* CARD */
+.group {
+  background-color: var(--bg-card);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  width: 100%; /* 🔥 REMOVE fixed width */
+}
+
+.groupTitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* FORM FIELDS */
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+input,
+select,
+textarea {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* 🔥 FULL-WIDTH BUTTON BAR */
+.actionBar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 32px 0 48px;
+}
+
+/* BUTTON */
+.submit {
+  min-width: 260px;
+  padding: 14px 40px;
+  background-color: var(--black-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.submit:hover {
+  border: 1px solid var(--gold-primary);
+}
+
+
+
+
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 16px;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .submit {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Optional but useful */
+  .actionBar {
+    position: sticky;
+    bottom: 0;
+    padding: 16px;
+  }
+}

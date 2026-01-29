@@ -1,0 +1,5 @@
+.main {
+  padding: 32px;
+  background-color: var(--bg-main);
+  min-height: calc(100vh - 64px); /* navbar height */
+}
