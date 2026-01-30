@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo} onClick={() => navigate("/")}>
-        <img src="/taj.jpg" alt="" />
+        <img src="/taj.png" alt="" />
       </div>
       <div>
         <h2 className={styles.title}>Taj Photography Studio</h2>

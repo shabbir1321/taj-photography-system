@@ -42,12 +42,17 @@ const BookingCard = ({
 
   return (
     <div
-      className={`${styles.card} ${isToday ? styles.today : ""}`}
+      className={`${styles.card} 
+        ${isToday ? styles.today : ""} 
+        ${isOpen ? styles.active : ""}`}
       onClick={() => !isEditing && onToggle(id)}
     >
       {/* HEADER */}
       <div className={styles.header}>
-        <p className={styles.name}>{clientName}</p>
+        <div>
+          <p className={styles.name}>{clientName}</p>
+          <p className={styles.reason}>{eventType} Shoot</p>
+        </div>
 
         {!isEditing && (
           <div className={styles.actions}>
@@ -57,6 +62,7 @@ const BookingCard = ({
                 e.stopPropagation();
                 onEdit();
               }}
+              title="Edit"
             >
               ✏️
             </button>
@@ -66,6 +72,7 @@ const BookingCard = ({
                 e.stopPropagation();
                 onDelete(id);
               }}
+              title="Delete"
             >
               🗑️
             </button>
@@ -73,19 +80,17 @@ const BookingCard = ({
         )}
       </div>
 
+      {/* FOOTER */}
       {!isEditing && (
-        <>
-          <p className={styles.reason}>{eventType} Shoot</p>
-          <div className={styles.footer}>
-            <span>{eventDate}</span>
-            <span className={`${styles.status} ${styles[status]}`}>
-              ● {status}
-            </span>
-          </div>
-        </>
+        <div className={styles.footer}>
+          <span className={styles.date}>{eventDate}</span>
+          <span className={`${styles.status} ${styles[status]}`}>
+            ● {status}
+          </span>
+        </div>
       )}
 
-      {/* EDIT BASIC DETAILS */}
+      {/* EDIT MODE */}
       {isEditing && (
         <div className={styles.editForm}>
           <input
@@ -109,10 +114,10 @@ const BookingCard = ({
           />
 
           <div className={styles.editActions}>
-            <button onClick={() => onSave(id)} className={styles.save}>
+            <button className={styles.save} onClick={() => onSave(id)}>
               Save
             </button>
-            <button onClick={onCancel} className={styles.cancel}>
+            <button className={styles.cancel} onClick={onCancel}>
               Cancel
             </button>
           </div>
@@ -130,22 +135,17 @@ const BookingCard = ({
 
           <p>💰 Total: ₹{totalAmount}</p>
           <p>💳 Paid: ₹{advancePaid}</p>
-          <p>🔴 Balance: ₹{balance}</p>
+          <p className={styles.balance}>🔴 Balance: ₹{balance}</p>
 
-          {/* PAYMENT */}
           {status !== "paid" && (
             <div className={styles.payment}>
-              <label>
-                Next Payment
-                <input
-                  type="number"
-                  value={nextPayment}
-                  onChange={(e) => setNextPayment(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  placeholder="₹"
-                />
-              </label>
-
+              <input
+                type="number"
+                placeholder="Next payment ₹"
+                value={nextPayment}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => setNextPayment(e.target.value)}
+              />
               <button className={styles.payBtn} onClick={handlePayment}>
                 Update Payment
               </button>

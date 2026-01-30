@@ -1,0 +1,30 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  width: 360px;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.card h2 {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.card input {
+  margin-bottom: 16px;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: center;
+}

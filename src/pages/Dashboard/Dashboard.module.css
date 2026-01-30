@@ -1,81 +1,70 @@
 .dashboard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  padding: 32px;
 }
 
-.heading {
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.header h2 {
   font-size: 22px;
-  margin-bottom: 20px;
+  font-weight: 600;
 }
 
-/* STATS ROW */
+/* SEARCH */
+.search {
+  width: 260px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+/* STATS */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 20px;
+  margin-bottom: 36px;
 }
 
 /* SECTION */
 .section {
-  width: 100%;
+  margin-bottom: 40px;
 }
 
 .sectionTitle {
   font-size: 12px;
   letter-spacing: 1px;
-  color: var(--text-muted);
-  margin-bottom: 16px;
+  color: #6b7280;
+  margin-bottom: 18px;
 }
 
-/* BOOKINGS GRID */
-.bookingGrid {
+/* CARDS GRID */
+.cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 
-/* Search box */
-.searchBox {
-  margin-bottom: 24px;
-}
-
-.searchBox input {
-  width: 100%;
-  max-width: 320px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
+/* EMPTY */
+.empty {
+  margin-top: 40px;
+  color: #6b7280;
   font-size: 14px;
-  font-family: inherit;
 }
 
-.searchBox input:focus {
-  outline: none;
-  border-color: var(--gold-primary);
-}
-
-
-
-/* TABLET */
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .bookingGrid {
+  .cards {
     grid-template-columns: 1fr;
-  }
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .dashboard {
-    padding: 16px;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2,1fr);
   }
 }

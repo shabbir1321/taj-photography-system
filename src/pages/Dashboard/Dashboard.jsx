@@ -8,8 +8,8 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../../firebase/firebase";
 
+import { db } from "../../firebase/firebase";
 import StatCard from "../../components/StatCard/StatCard";
 import BookingCard from "../../components/BookingCard/BookingCard";
 import styles from "./Dashboard.module.css";
@@ -28,13 +28,16 @@ const Dashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [openBookingId, setOpenBookingId] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({});
+  const [editData, setEditData] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+    const q = query(
+      collection(db, "bookings"),
+      orderBy("createdAt", "desc")
+    );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsub = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -42,31 +45,24 @@ const Dashboard = () => {
       setBookings(data);
     });
 
-    return () => unsubscribe();
+    return () => unsub();
   }, []);
 
   const today = new Date().toISOString().split("T")[0];
 
-  const handleToggle = (id) => {
-    if (editingId) return;
-    setOpenBookingId((prev) => (prev === id ? null : id));
-  };
-
-  // 🔍 Search by client name
-  const filteredBookings = bookings.filter((b) =>
+  const filtered = bookings.filter((b) =>
     b.clientName?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Grouping + sorting
-  const todaysBookings = filteredBookings.filter(
+  const todaysBookings = filtered.filter(
     (b) => b.eventDate === today
   );
 
-  const upcomingBookings = filteredBookings
+  const upcomingBookings = filtered
     .filter((b) => b.eventDate > today)
     .sort((a, b) => new Date(a.eventDate) - new Date(b.eventDate));
 
-  const pastBookings = filteredBookings
+  const pastBookings = filtered
     .filter((b) => b.eventDate < today)
     .sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
 
@@ -80,7 +76,11 @@ const Dashboard = () => {
     (b) => b.status === "paid"
   ).length;
 
-  // ✏️ Edit booking
+  const handleToggle = (id) => {
+    if (editingId) return;
+    setOpenBookingId((prev) => (prev === id ? null : id));
+  };
+
   const handleEdit = (booking) => {
     setEditingId(booking.id);
     setEditData({
@@ -90,46 +90,18 @@ const Dashboard = () => {
     });
   };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditData({});
-  };
-
   const handleSaveEdit = async (id) => {
     await updateDoc(doc(db, "bookings", id), editData);
     setEditingId(null);
   };
 
-  // 💰 PAYMENT LOGIC (FINAL)
-  const handlePaymentUpdate = async (
-    id,
-    nextPayment,
-    totalAmount,
-    currentAdvance
-  ) => {
-    const newAdvance = Math.min(
-      currentAdvance + nextPayment,
-      totalAmount
-    );
-
-    const balance = totalAmount - newAdvance;
-    const status = newAdvance === totalAmount ? "paid" : "pending";
-
-    await updateDoc(doc(db, "bookings", id), {
-      advancePaid: newAdvance,
-      balance,
-      status,
-    });
-  };
-
-  // 🗑️ Delete
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this booking?")) return;
     await deleteDoc(doc(db, "bookings", id));
   };
 
-  const renderCards = (list, isTodayFlag) => (
-    <div className={styles.bookingGrid}>
+  const renderCards = (list, isToday) => (
+    <div className={styles.cards}>
       {list.map((b) => (
         <BookingCard
           key={b.id}
@@ -144,17 +116,16 @@ const Dashboard = () => {
           advancePaid={b.advancePaid || 0}
           balance={b.balance ?? b.totalAmount}
           status={b.status || "pending"}
-          isToday={isTodayFlag}
+          isToday={isToday}
           isOpen={openBookingId === b.id}
           isEditing={editingId === b.id}
           onToggle={handleToggle}
           onEdit={() => handleEdit(b)}
           onDelete={handleDelete}
           onSave={handleSaveEdit}
-          onCancel={handleCancelEdit}
+          onCancel={() => setEditingId(null)}
           editData={editData}
           setEditData={setEditData}
-          onPaymentUpdate={handlePaymentUpdate}
         />
       ))}
     </div>
@@ -162,48 +133,48 @@ const Dashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      <h2 className={styles.heading}>Dashboard</h2>
+      <div className={styles.header}>
+        <h2>Dashboard</h2>
 
-      {/* STATS */}
-      <div className={styles.stats}>
-        <StatCard title="Today's Shoots" value={todaysBookings.length} />
-        <StatCard title="Pending Amount" value={`₹${pendingAmount}`} />
-        <StatCard title="Completed" value={completedCount} />
-        <StatCard title="All Bookings" value={bookings.length} />
-      </div>
-
-      {/* SEARCH */}
-      <div className={styles.searchBox}>
         <input
+          className={styles.search}
           placeholder="Search by client name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
+      {/* STATS */}
+      <div className={styles.stats}>
+        <StatCard title="Today's Shoots" value={todaysBookings.length} />
+        <StatCard title="Pending Amount" value={`₹${pendingAmount}`} />
+        <StatCard title="Completed" value={completedCount} />
+        <StatCard title="Total Bookings" value={bookings.length} />
+      </div>
+
       {todaysBookings.length > 0 && (
-        <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>TODAY</h4>
+        <section className={styles.section}>
+          <p className={styles.sectionTitle}>TODAY</p>
           {renderCards(todaysBookings, true)}
-        </div>
+        </section>
       )}
 
       {upcomingBookings.length > 0 && (
-        <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>UPCOMING</h4>
+        <section className={styles.section}>
+          <p className={styles.sectionTitle}>UPCOMING</p>
           {renderCards(upcomingBookings, false)}
-        </div>
+        </section>
       )}
 
       {pastBookings.length > 0 && (
-        <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>PAST</h4>
+        <section className={styles.section}>
+          <p className={styles.sectionTitle}>PAST</p>
           {renderCards(pastBookings, false)}
-        </div>
+        </section>
       )}
 
-      {filteredBookings.length === 0 && (
-        <p className={styles.empty}>No bookings match your search</p>
+      {filtered.length === 0 && (
+        <p className={styles.empty}>No bookings found</p>
       )}
     </div>
   );
