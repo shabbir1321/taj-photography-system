@@ -1,0 +1,25 @@
+{
+  "short_name": "Taj Studio",
+  "name": "Taj Photography Studio Management",
+  "icons": [
+    {
+      "src": "taj.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "taj.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "taj.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0E0E0E",
+  "background_color": "#0E0E0E"
+}

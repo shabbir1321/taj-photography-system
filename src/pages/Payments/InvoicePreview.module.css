@@ -1,0 +1,373 @@
+.wrapper {
+  margin-top: 40px;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.previewLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: #D4AF37;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.9;
+}
+
+.invoice {
+  background: #ffffff;
+  padding: 60px;
+  border-radius: 4px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  color: #1a1a1a;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.invoice::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #D4AF37;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 50px;
+}
+
+.brandSection {
+  flex: 1;
+}
+
+.studioName {
+  font-size: 32px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  display: block;
+  letter-spacing: -0.5px;
+  background: transparent;
+  border: none;
+  width: 100%;
+}
+
+.business {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.8;
+  white-space: pre-line;
+  background: transparent;
+  border: none;
+  width: 100%;
+  resize: none;
+}
+
+.invoiceMeta {
+  text-align: right;
+}
+
+.invoiceTitle {
+  font-size: 42px;
+  font-weight: 300;
+  font-family: 'Outfit', sans-serif;
+  margin: 0 0 20px 0;
+  color: #1a1a1a;
+  letter-spacing: 4px;
+}
+
+.metaDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  font-size: 13px;
+}
+
+.metaLabel {
+  font-weight: 400;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metaValue {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* INFO GRID */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 800;
+  color: #D4AF37;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.clientName {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.clientDetail {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eventItem {
+  margin-bottom: 15px;
+}
+
+.eventFunctionName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.eventDate {
+  font-size: 13px;
+  color: #666;
+}
+
+/* TABLES */
+.tableWrapper {
+  margin-bottom: 40px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 800;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 15px 0;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.table td {
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.serviceDesc {
+  font-weight: 500;
+}
+
+/* SUMMARY */
+.summarySection {
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 40px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.summaryLabel {
+  color: #666;
+}
+
+.summaryValue {
+  font-weight: 600;
+  min-width: 100px;
+  text-align: right;
+}
+
+/* BALANCE */
+.balanceSection {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.balanceBox {
+  padding: 10px 0;
+  text-align: right;
+  border-top: 2px solid #1a1a1a;
+  min-width: 200px;
+}
+
+.balanceLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #999;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.balanceAmount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a1a1a;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 80px;
+  text-align: center;
+  border-top: 1px solid #eee;
+  padding-top: 40px;
+}
+
+.footerTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+.footerText {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .invoice {
+    padding: 40px 20px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .invoiceMeta {
+    text-align: left;
+  }
+
+  .metaRow {
+    justify-content: flex-start;
+  }
+
+  .invoiceTitle {
+    font-size: 32px;
+    letter-spacing: 2px;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .studioName {
+    font-size: 24px;
+  }
+
+  .balanceBox {
+    width: 100%;
+    min-width: unset;
+    padding: 20px 0;
+  }
+
+  .balanceAmount {
+    font-size: 28px;
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+    margin: 0 -20px 30px;
+    padding: 0 20px;
+  }
+
+  .table {
+    min-width: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoice {
+    padding: 30px 15px;
+  }
+
+  .studioName {
+    font-size: 20px;
+  }
+
+  .invoiceTitle {
+    font-size: 28px;
+  }
+
+  .summaryRow {
+    gap: 20px;
+  }
+}
+
+@media print {
+  .invoice {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+}
