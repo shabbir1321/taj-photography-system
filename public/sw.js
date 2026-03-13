@@ -1,7 +1,5 @@
-const CACHE_NAME = 'taj-studio-v1';
+const CACHE_NAME = 'taj-studio-v2';
 const urlsToCache = [
-    '/',
-    '/index.html',
     '/taj.png',
 ];
 
