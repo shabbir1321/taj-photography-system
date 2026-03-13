@@ -123,6 +123,7 @@ textarea {
   justify-content: center;
   padding: 40px 0 48px;
   margin-top: 20px;
+  grid-column: 1 / -1; /* Spans full width inside grid */
 }
 
 /* BUTTON */

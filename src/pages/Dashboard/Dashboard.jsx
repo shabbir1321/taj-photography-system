@@ -105,7 +105,20 @@ const Dashboard = () => {
   };
 
   const handleSaveEdit = async (id) => {
-    await updateDoc(doc(db, "bookings", id), editData);
+    const total = Number(editData.totalAmount) || 0;
+    const advance = Number(editData.advancePaid) || 0;
+    const balance = Math.max(total - advance, 0);
+    const status = balance === 0 ? "paid" : (advance > 0 ? "advance" : "pending");
+
+    const finalData = {
+      ...editData,
+      totalAmount: total,
+      advancePaid: advance,
+      balance,
+      status
+    };
+
+    await updateDoc(doc(db, "bookings", id), finalData);
     setEditingId(null);
   };
 

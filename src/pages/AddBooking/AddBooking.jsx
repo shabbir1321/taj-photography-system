@@ -93,11 +93,11 @@ const AddBooking = () => {
     };
 
     try {
-      await addDoc(collection(db, "bookings"), bookingData);
+      const docRef = await addDoc(collection(db, "bookings"), bookingData);
       navigate("/");
     } catch (error) {
       console.error("Error saving booking:", error);
-      alert("Failed to save booking");
+      alert("Failed to save booking. Please check console for details.");
     }
   };
 
@@ -285,14 +285,14 @@ const AddBooking = () => {
             <h4 className={styles.groupTitle}>Notes</h4>
             <textarea placeholder="Special instructions, deliverables, etc." />
           </div>
-        </form>
-      </div>
 
-      {/* ACTION BAR */}
-      <div className={styles.actionBar}>
-        <button type="submit" className={styles.submit} onClick={handleSubmit}>
-          Confirm Record
-        </button>
+          {/* ACTION BAR moved inside form */}
+          <div className={styles.actionBar}>
+            <button type="submit" className={styles.submit}>
+              Confirm Record
+            </button>
+          </div>
+        </form>
       </div>
     </>
   );
