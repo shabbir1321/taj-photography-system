@@ -1,4 +1,4 @@
-const CACHE_NAME = 'taj-studio-v2';
+const CACHE_NAME = 'taj-studio-v3';
 const urlsToCache = [
     '/taj.png',
 ];
@@ -12,7 +12,23 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-    event.waitUntil(clients.claim());
+    // Force immediate takeover
+    event.waitUntil(
+        Promise.all([
+            clients.claim(),
+            // Clear all old caches
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        if (cacheName !== CACHE_NAME) {
+                            console.log('SW: Clearing old cache', cacheName);
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+        ])
+    );
 });
 
 self.addEventListener('fetch', (event) => {
