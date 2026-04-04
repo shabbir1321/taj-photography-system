@@ -290,7 +290,7 @@
 
 @media (max-width: 768px) {
   .invoice {
-    padding: 40px 20px;
+    padding: 30px 20px;
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -328,39 +328,99 @@
   .balanceBox {
     width: 100%;
     min-width: unset;
-    padding: 20px 0;
+    padding: 10px 0;
   }
 
   .balanceAmount {
     font-size: 28px;
   }
 
-  .tableWrapper {
-    overflow-x: auto;
-    margin: 0 -20px 30px;
-    padding: 0 20px;
+  /* Responsive Table - Transform to Cards */
+  .table thead {
+    display: none; 
   }
 
-  .table {
-    min-width: 500px;
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    background: #fdfdfd;
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    text-align: right;
+  }
+
+  .table td:last-child {
+    border-bottom: none;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 800;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+  }
+
+  .alignRight {
+    text-align: right;
+  }
+
+  .tableWrapper {
+    overflow-x: visible;
+    margin: 0 0 30px;
+    padding: 0;
   }
 }
 
 @media (max-width: 480px) {
   .invoice {
-    padding: 30px 15px;
+    padding: 24px 16px;
   }
 
   .studioName {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .invoiceTitle {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .summaryRow {
-    gap: 20px;
+    gap: 16px;
+    font-size: 13px;
+    justify-content: space-between;
+  }
+
+  .summaryValue {
+    min-width: unset;
+  }
+
+  .balanceAmount {
+    font-size: 24px;
+  }
+
+  .previewLabel {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .table tr {
+    padding: 12px;
   }
 }
 

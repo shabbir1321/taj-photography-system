@@ -1,0 +1,156 @@
+.wrapper {
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.4s ease;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.titleInfo h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 4px;
+}
+
+.titleInfo p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* SEARCH */
+.searchBar {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.searchBar input {
+  width: 100%;
+  padding: 12px 18px 12px 42px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border-light);
+  font-size: 15px;
+  transition: all 0.2s ease;
+  background-color: var(--bg-card);
+}
+
+.searchBar input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 4px rgba(201, 162, 77, 0.1);
+}
+
+/* TABLE STYLING */
+.tableContainer {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow-x: auto; /* For horizontal scroll on small screens */
+  overflow-y: auto; /* For vertical scroll */
+  max-height: calc(100vh - 260px); /* Fixed height to enable internal scrolling */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table thead {
+  background-color: var(--bg-card);
+  border-bottom: 2px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table th {
+  padding: 16px 24px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  background-color: var(--bg-card); /* Ensure header covers content while scrolling */
+}
+
+.nameColHeader { min-width: 200px; }
+.dateColHeader { min-width: 120px; }
+.statusColHeader { min-width: 120px; }
+.balanceColHeader { min-width: 120px; }
+.actionsColHeader { min-width: 140px; }
+
+
+/* EMPTY */
+.empty {
+  margin-top: 60px;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 40px;
+  background-color: var(--bg-card);
+  border-radius: 20px;
+  border: 2px dashed var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.emptyIcon {
+    opacity: 0.2;
+    margin-bottom: 8px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 968px) {
+  .wrapper {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .searchBar {
+    max-width: 100%;
+  }
+  
+  .tableContainer {
+    overflow-x: hidden;
+    border: none;
+    border-radius: 0;
+    margin: 0 -24px;
+    background: transparent;
+  }
+  .table, .table thead, .table tbody, .table th, .table td, .table tr {
+    display: block;
+    width: 100%;
+  }
+  .table thead {
+    display: none;
+  }
+}

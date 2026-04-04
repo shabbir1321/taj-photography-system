@@ -291,10 +291,26 @@ textarea {
   }
 
   .actionBar {
-    position: sticky;
+    position: fixed;
     bottom: 0;
-    padding: 16px 0;
-    background: linear-gradient(to top, var(--bg-main) 80%, transparent);
+    left: 0;
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-gold);
+    z-index: 100;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+  }
+
+  .phoneInput {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .submit {
+    width: 100%;
+    min-width: auto;
   }
 }
 

@@ -1,16 +1,22 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { collection, addDoc, doc, getDoc, getDocs, updateDoc, serverTimestamp, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./AddBooking.module.css";
 
 const AddBooking = () => {
   const navigate = useNavigate();
+  const { id } = useParams(); // For edit mode
+  const { user, isDemoMode } = useAuth();
+  
+  const [loading, setLoading] = useState(!!id);
 
   // Client
   const [clientName, setClientName] = useState("");
   const [countryCode, setCountryCode] = useState("+91");
   const [phone, setPhone] = useState("");
+  const [bookingDate, setBookingDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Events (Multiple)
   const [events, setEvents] = useState([
@@ -18,12 +24,77 @@ const AddBooking = () => {
   ]);
 
   const [eventType, setEventType] = useState("Wedding");
+  const [clientSuggestions, setClientSuggestions] = useState([]);
+
+  // Fetch unique client names for suggestions
+  useEffect(() => {
+    if (!user || isDemoMode) return;
+    const fetchClients = async () => {
+      try {
+        const q = query(collection(db, "bookings"), where("userId", "==", user.uid));
+        const snap = await getDocs(q);
+        const names = new Set();
+        snap.forEach(d => {
+          if (d.data().clientName) names.add(d.data().clientName);
+        });
+        setClientSuggestions(Array.from(names));
+      } catch(err) {
+        console.error("Failed to fetch client suggestions", err);
+      }
+    };
+    fetchClients();
+  }, [user, isDemoMode]);
 
   // Payment
   const [totalAmount, setTotalAmount] = useState("");
   const [advancePaid, setAdvancePaid] = useState("");
   const [advanceDate, setAdvanceDate] = useState(new Date().toISOString().split('T')[0]);
   const [paymentMode, setPaymentMode] = useState("Cash");
+  const [paymentHistory, setPaymentHistory] = useState([]);
+
+  useEffect(() => {
+    const fetchBooking = async () => {
+      if (!id || isDemoMode) return;
+      try {
+        const docRef = doc(db, "bookings", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setClientName(data.clientName || "");
+          setEventType(data.eventType || "Wedding");
+          setTotalAmount(data.totalAmount || "");
+          setAdvancePaid(data.advancePaid || "");
+          setPaymentHistory(data.paymentHistory || []);
+          setBookingDate(data.bookingDate || new Date(data.createdAt?.toMillis() || Date.now()).toISOString().split('T')[0]);
+          
+          if (data.events && data.events.length > 0) {
+            setEvents(data.events);
+          } else {
+            // fallback for older bookings
+            setEvents([{ date: data.eventDate || "", time: data.eventTime || "", location: data.location || "", functionName: "" }]);
+          }
+
+          // parse phone if it has country code (rudimentary split)
+          if (data.phone) {
+            if (data.phone.startsWith("+91")) { setCountryCode("+91"); setPhone(data.phone.substring(3)); }
+            else if (data.phone.startsWith("+1")) { setCountryCode("+1"); setPhone(data.phone.substring(2)); }
+            else if (data.phone.startsWith("+44")) { setCountryCode("+44"); setPhone(data.phone.substring(3)); }
+            else if (data.phone.startsWith("+971")) { setCountryCode("+971"); setPhone(data.phone.substring(4)); }
+            else if (data.phone.startsWith("+966")) { setCountryCode("+966"); setPhone(data.phone.substring(4)); }
+            else if (data.phone.startsWith("+61")) { setCountryCode("+61"); setPhone(data.phone.substring(3)); }
+            else { setPhone(data.phone); }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching booking", error);
+      }
+      setLoading(false);
+    };
+
+    if (id) {
+      fetchBooking();
+    }
+  }, [id, isDemoMode]);
 
   const total = Number(totalAmount) || 0;
   const advance = Number(advancePaid) || 0;
@@ -58,10 +129,13 @@ const AddBooking = () => {
     // Use first event for top-level compatibility
     const firstEvent = events[0];
 
-    // Build initial payment history if advance is paid
-    const paymentHistory = [];
-    if (advance > 0) {
-      paymentHistory.push({
+    // Build payment history array
+    let updatedHistory = [...paymentHistory];
+    
+    // Only push to history if this is a NEW booking with an advance, 
+    // OR if we wanted to register advance modifications (we will just keep original history for now during edit)
+    if (!id && advance > 0) {
+      updatedHistory.push({
         amount: advance,
         date: advanceDate,
         mode: paymentMode,
@@ -72,6 +146,7 @@ const AddBooking = () => {
       clientName,
       phone: `${countryCode}${phone}`,
       eventType,
+      bookingDate, // Timestamp string of when they booked
       events, // Full events array
       eventDate: firstEvent.date,
       eventTime: firstEvent.time,
@@ -80,7 +155,7 @@ const AddBooking = () => {
       totalAmount: total,
       advancePaid: advance,
       balance,
-      paymentHistory, // Track payment history
+      paymentHistory: updatedHistory, // Track payment history
 
       status:
         balance === 0
@@ -89,22 +164,37 @@ const AddBooking = () => {
             ? "advance"
             : "pending",
 
-      createdAt: serverTimestamp(),
+      userId: user.uid, // Tag the booking with the current user's ID
     };
 
+    if (isDemoMode) {
+      alert(`Demo Mode Success! Record ${id ? 'updated' : 'simulated'} but not saved.`);
+      navigate(-1);
+      return;
+    }
+
     try {
-      const docRef = await addDoc(collection(db, "bookings"), bookingData);
-      navigate("/");
+      if (id) {
+        // Edit mode
+        await updateDoc(doc(db, "bookings", id), bookingData);
+      } else {
+        // Create mode
+        bookingData.createdAt = serverTimestamp();
+        await addDoc(collection(db, "bookings"), bookingData);
+      }
+      navigate(-1);
     } catch (error) {
       console.error("Error saving booking:", error);
       alert("Failed to save booking. Please check console for details.");
     }
   };
 
+  if (loading) return <div className="flex justify-center mt-xl"><div className="spinner"></div></div>;
+
   return (
     <>
       <div className={styles.wrapper}>
-        <h2 className={styles.heading}>New Booking Record</h2>
+        <h2 className={styles.heading}>{id ? "Edit Booking Record" : "New Booking Record"}</h2>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {/* Client */}
@@ -115,10 +205,16 @@ const AddBooking = () => {
               Client Name
               <input
                 type="text"
+                list="client-suggestions"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="Enter client name"
               />
+              <datalist id="client-suggestions">
+                {clientSuggestions.map((name, idx) => (
+                  <option key={idx} value={name} />
+                ))}
+              </datalist>
             </label>
 
             <div className={styles.phoneInput}>
@@ -148,20 +244,33 @@ const AddBooking = () => {
               </label>
             </div>
 
-            <label style={{ marginTop: '15px', display: 'block' }}>
-              Main Event Type
-              <select
-                value={eventType}
-                onChange={(e) => setEventType(e.target.value)}
-              >
-                <option>Wedding</option>
-                <option>Birthday</option>
-                <option>Pre-Wedding</option>
-                <option>Baby Shower</option>
-                <option>Maternity</option>
-                <option>Other</option>
-              </select>
-            </label>
+            <div className={styles.phoneInput}>
+              <label className={styles.countrySelect} style={{ flex: 1 }}>
+                Date of Booking
+                <input
+                  type="date"
+                  value={bookingDate}
+                  onChange={(e) => setBookingDate(e.target.value)}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-card)' }}
+                />
+              </label>
+
+              <label style={{ flex: 1, marginTop: '2px' }}>
+                Main Event Type
+                <select
+                  value={eventType}
+                  onChange={(e) => setEventType(e.target.value)}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-light)', background: 'var(--bg-card)' }}
+                >
+                  <option>Wedding</option>
+                  <option>Birthday</option>
+                  <option>Pre-Wedding</option>
+                  <option>Baby Shower</option>
+                  <option>Maternity</option>
+                  <option>Other</option>
+                </select>
+              </label>
+            </div>
           </div>
 
           {/* Events */}
@@ -181,7 +290,7 @@ const AddBooking = () => {
                     What function? (e.g. Reception, Haldi)
                     <input
                       type="text"
-                      value={event.functionName}
+                      value={event.functionName || ""}
                       onChange={(e) => updateEvent(index, "functionName", e.target.value)}
                       placeholder="Enter function name"
                     />
@@ -191,7 +300,7 @@ const AddBooking = () => {
                       Date
                       <input
                         type="date"
-                        value={event.date}
+                        value={event.date || ""}
                         onChange={(e) => updateEvent(index, "date", e.target.value)}
                       />
                     </label>
@@ -199,7 +308,7 @@ const AddBooking = () => {
                       Time
                       <input
                         type="time"
-                        value={event.time}
+                        value={event.time || ""}
                         onChange={(e) => updateEvent(index, "time", e.target.value)}
                       />
                     </label>
@@ -208,7 +317,7 @@ const AddBooking = () => {
                     Location
                     <input
                       type="text"
-                      value={event.location}
+                      value={event.location || ""}
                       onChange={(e) => updateEvent(index, "location", e.target.value)}
                       placeholder="Event location"
                     />
@@ -248,31 +357,35 @@ const AddBooking = () => {
                 value={advancePaid}
                 onChange={(e) => setAdvancePaid(e.target.value)}
                 placeholder="Rs."
+                disabled={!!id} // Do not change total advance from here if editing, use payment update instead ideally, or we can leave it enabled for master edit
               />
+              {!!id && <small style={{ color: "var(--text-muted)", display: "block", marginTop: "4px" }}>Use quick payment form on booking list to add split payments safely.</small>}
             </label>
 
-            <div className={styles.dateTimeRow}>
-              <label>
-                Payment Date
-                <input
-                  type="date"
-                  value={advanceDate}
-                  onChange={(e) => setAdvanceDate(e.target.value)}
-                />
-              </label>
-              <label>
-                Payment Mode
-                <select
-                  value={paymentMode}
-                  onChange={(e) => setPaymentMode(e.target.value)}
-                >
-                  <option>Cash</option>
-                  <option>UPI</option>
-                  <option>Card</option>
-                  <option>Bank Transfer</option>
-                </select>
-              </label>
-            </div>
+            {!id && (
+              <div className={styles.dateTimeRow}>
+                <label>
+                  Payment Date
+                  <input
+                    type="date"
+                    value={advanceDate}
+                    onChange={(e) => setAdvanceDate(e.target.value)}
+                  />
+                </label>
+                <label>
+                  Payment Mode
+                  <select
+                    value={paymentMode}
+                    onChange={(e) => setPaymentMode(e.target.value)}
+                  >
+                    <option>Cash</option>
+                    <option>UPI</option>
+                    <option>Card</option>
+                    <option>Bank Transfer</option>
+                  </select>
+                </label>
+              </div>
+            )}
 
             <label>
               Balance
@@ -289,7 +402,7 @@ const AddBooking = () => {
           {/* ACTION BAR moved inside form */}
           <div className={styles.actionBar}>
             <button type="submit" className={styles.submit}>
-              Confirm Record
+              {id ? "Save Changes" : "Confirm Record"}
             </button>
           </div>
         </form>

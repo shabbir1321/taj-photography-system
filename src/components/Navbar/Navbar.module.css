@@ -272,7 +272,11 @@
   }
 
   .title {
-    font-size: 16px;
+    font-size: 14px;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .logo img {
@@ -295,38 +299,64 @@
 
 @media (max-width: 768px) {
   .hamburger {
-    display: flex;
+    display: none; /* Hide hamburger, use bottom nav */
   }
 
   .links {
     position: fixed;
-    top: 64px;
-    left: -100%;
+    top: auto;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    height: calc(100vh - 64px);
+    height: auto;
     background: var(--bg-sidebar);
-    flex-direction: column;
-    gap: 0;
-    padding: 24px 0;
-    transition: left 0.3s ease;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 8px 12px;
+    transition: none;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
   }
 
   .links.mobileOpen {
-    left: 0;
+    left: 0; /* Keep it visible if it somehow gets the class */
   }
 
   .links li {
-    width: 100%;
-    padding: 16px 32px;
-    border-radius: 0;
-    font-size: 16px;
-    justify-content: flex-start;
+    width: auto;
+    padding: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text-muted);
   }
 
-  .links li:hover {
+  .links li .icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .links li:hover, .links li:active {
     transform: none;
-    background-color: rgba(201, 162, 77, 0.15);
+    background-color: transparent;
+    color: var(--gold-primary);
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .statIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .statValue {
+    font-size: 20px;
   }
 
   .userSection {

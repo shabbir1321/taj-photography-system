@@ -41,7 +41,10 @@ self.addEventListener('fetch', (event) => {
         url.includes('firestore.googleapis.com') ||
         url.includes('firebase.google.com') ||
         url.includes('google.com') ||
-        url.includes('firebaseapp.com')
+        url.includes('firebaseapp.com') ||
+        url.includes('localhost') ||
+        url.includes('vite') ||
+        url.includes('hmr')
     ) {
         return;
     }

@@ -1,15 +1,40 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { useAuth } from "../../context/AuthContext";
+import { MOCK_BOOKINGS } from "../../data/mockData";
 import styles from "./Transactions.module.css";
 
 const Transactions = () => {
+    const { user, isDemoMode } = useAuth();
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+        if (isDemoMode || user?.isMockUser) {
+            const allTransactions = [];
+            MOCK_BOOKINGS.forEach(doc => {
+                if (doc.paymentHistory) {
+                    doc.paymentHistory.forEach(pay => {
+                        allTransactions.push({
+                            ...pay,
+                            clientName: doc.clientName,
+                            bookingId: doc.id
+                        });
+                    });
+                }
+            });
+            setTransactions(allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date)));
+            setLoading(false);
+            return;
+        }
+
+        const q = query(
+            collection(db, "bookings"),
+            where("userId", "==", user.uid),
+            orderBy("createdAt", "desc")
+        );
         const unsub = onSnapshot(q, (snapshot) => {
             const allTransactions = [];
             snapshot.docs.forEach(doc => {
@@ -32,7 +57,7 @@ const Transactions = () => {
         });
 
         return () => unsub();
-    }, []);
+    }, [isDemoMode, user?.uid]);
 
     const filtered = transactions.filter(t =>
         t.clientName?.toLowerCase().includes(search.toLowerCase()) ||

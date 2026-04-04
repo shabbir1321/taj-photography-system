@@ -89,8 +89,8 @@ const InvoicePreview = ({ invoice, setInvoice }) => {
             </thead>
             <tbody>
               <tr>
-                <td className={styles.serviceDesc}>{invoice.description}</td>
-                <td className={styles.alignRight}>Rs. {invoice.totalAmount.toLocaleString('en-IN')}</td>
+                <td className={styles.serviceDesc} data-label="DESCRIPTION">{invoice.description}</td>
+                <td className={styles.alignRight} data-label="TOTAL">Rs. {invoice.totalAmount.toLocaleString('en-IN')}</td>
               </tr>
             </tbody>
           </table>
@@ -111,9 +111,9 @@ const InvoicePreview = ({ invoice, setInvoice }) => {
               <tbody>
                 {invoice.paymentHistory.map((pay, pIdx) => (
                   <tr key={pIdx}>
-                    <td>{pay.date}</td>
-                    <td>{pay.mode}</td>
-                    <td className={styles.alignRight}>Rs. {pay.amount.toLocaleString('en-IN')}</td>
+                    <td data-label="DATE">{pay.date}</td>
+                    <td data-label="METHOD">{pay.mode}</td>
+                    <td className={styles.alignRight} data-label="AMOUNT">Rs. {pay.amount.toLocaleString('en-IN')}</td>
                   </tr>
                 ))}
               </tbody>
@@ -142,9 +142,9 @@ const InvoicePreview = ({ invoice, setInvoice }) => {
 
         {/* FOOTER */}
         <div className={styles.footer}>
-          <p className={styles.footerTitle}>Photography by Taj Studio</p>
+          <p className={styles.footerTitle}>Photography by {invoice.studioName}</p>
           <p className={styles.footerText}>
-            Thank you for choosing Taj Studio for your special moments.<br />
+            Thank you for choosing {invoice.studioName} for your special moments.<br />
             This is a computer-generated document and does not require a signature.
           </p>
         </div>

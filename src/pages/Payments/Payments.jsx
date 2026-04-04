@@ -1,39 +1,47 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 import { db } from "../../firebase/firebase";
+import { useAuth } from "../../context/AuthContext";
+import { MOCK_BOOKINGS } from "../../data/mockData";
 import InvoicePreview from "./InvoicePreview";
 import styles from "./Payments.module.css";
 
 const Payments = () => {
+  const { user, profile, isDemoMode } = useAuth();
   const [bookings, setBookings] = useState([]);
-  const [query, setQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "bookings"), (snapshot) => {
+    if (isDemoMode || user?.isMockUser) {
+      setBookings(MOCK_BOOKINGS);
+      return;
+    }
+
+    const q = query(collection(db, "bookings"), where("userId", "==", user.uid));
+    const unsub = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
       setBookings(data);
     });
     return () => unsub();
-  }, []);
+  }, [isDemoMode, user?.uid]);
 
   const suggestions = bookings.filter((b) =>
-    b.clientName?.toLowerCase().includes(query.toLowerCase())
+    b.clientName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSelect = (booking) => {
     setSelectedBooking(booking);
-    setQuery(booking.clientName);
+    setSearchQuery(booking.clientName);
 
     setInvoice({
-      studioName: "Taj Studio",
-      businessDetails:
-        "Badwani & Indore\n+91 7415856921",
+      studioName: profile?.studioName || "Studio",
+      businessDetails: profile?.businessDetails || "Contact details here",
       clientName: booking.clientName || "",
       clientPhone: booking.phone || "",
       clientEmail: booking.email || "",
@@ -45,6 +53,7 @@ const Payments = () => {
       status: booking.status || "pending",
       events: booking.events || [],
       paymentHistory: booking.paymentHistory || [],
+      logoUrl: profile?.logoUrl || null,
       invoiceNo: `INV-${Date.now()}`,
       invoiceDate: new Date().toLocaleDateString("en-IN"),
     });
@@ -246,12 +255,12 @@ const Payments = () => {
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(...charcoalColor);
-      doc.text(`Photography by Taj Studio`, pageWidth / 2, pageHeight - 25, { align: "center" });
+      doc.text(`Photography by ${invoice.studioName}`, pageWidth / 2, pageHeight - 25, { align: "center" });
 
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(...mutedGray);
-      doc.text("Professional Photography Services | Badwani & Indore | +91 7415856921", pageWidth / 2, pageHeight - 20, { align: "center" });
+      doc.text(invoice.businessDetails.replace(/\n/g, " | "), pageWidth / 2, pageHeight - 20, { align: "center" });
       doc.text("This is a computer-generated document and does not require a signature.", pageWidth / 2, pageHeight - 15, { align: "center" });
 
 
@@ -279,37 +288,65 @@ const Payments = () => {
         <p className={styles.sub}>Generate and send professional invoices</p>
       </div>
 
-      {/* SEARCH */}
-      <div className={styles.card}>
-        <label className={styles.label}>Client Name</label>
-        <input
-          className={styles.input}
-          value={query}
-          placeholder="Search client..."
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setSelectedBooking(null);
-            setInvoice(null);
-          }}
-        />
+      {/* SEARCH AND SELECT */}
+      <div className={styles.categoryHeader}>
+        <h3>Step 1: Select Client</h3>
+        <p>Find the client you want to generate a bill for</p>
+      </div>
 
-        {query && !selectedBooking && (
-          <div className={styles.suggestions}>
-            {suggestions.map((b) => (
-              <div
-                key={b.id}
-                className={styles.suggestion}
-                onClick={() => handleSelect(b)}
-              >
-                <strong>{b.clientName}</strong>
-                <span>{b.eventType}</span>
-              </div>
-            ))}
-            {suggestions.length === 0 && (
-              <p className={styles.noResult}>No client found</p>
-            )}
-          </div>
-        )}
+      <div className={styles.card}>
+        <div className={styles.searchBox}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input
+            className={styles.input}
+            value={searchQuery}
+            placeholder="Filter by name..."
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              if (selectedBooking) {
+                setSelectedBooking(null);
+                setInvoice(null);
+              }
+            }}
+          />
+        </div>
+
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>CLIENT NAME</th>
+                <th>EVENT TYPE</th>
+                <th>DATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {suggestions.length > 0 ? (
+                suggestions.map((b) => (
+                  <tr
+                    key={b.id}
+                    className={`${styles.tableRow} ${
+                      selectedBooking?.id === b.id ? styles.activeRow : ""
+                    }`}
+                    onClick={() => handleSelect(b)}
+                  >
+                    <td className={styles.clientName}>{b.clientName}</td>
+                    <td>{b.eventType}</td>
+                    <td className={styles.clientTag}>{b.eventDate}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">
+                    <div className={styles.noResults}>
+                      <p>No bookings found matching "{searchQuery}"</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* PREVIEW */}

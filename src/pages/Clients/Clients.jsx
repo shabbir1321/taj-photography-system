@@ -1,22 +1,34 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
+import { useAuth } from "../../context/AuthContext";
+import { MOCK_BOOKINGS } from "../../data/mockData";
 import styles from "./Clients.module.css";
 import { Link } from "react-router-dom";
 
 const Clients = () => {
+    const { user, isDemoMode } = useAuth();
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        const unsub = onSnapshot(collection(db, "bookings"), (snapshot) => {
+        if (isDemoMode || user?.isMockUser) {
+            setBookings(MOCK_BOOKINGS);
+            setLoading(false);
+            return;
+        }
+
+        if (!user) return;
+
+        const q = query(collection(db, "bookings"), where("userId", "==", user.uid));
+        const unsub = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
             setBookings(data);
             setLoading(false);
         });
         return () => unsub();
-    }, []);
+    }, [isDemoMode, user?.uid]);
 
     // Group bookings by client phone
     const clientMap = bookings.reduce((acc, booking) => {

@@ -3,3 +3,10 @@
   background-color: var(--bg-main);
   min-height: calc(100vh - 64px); /* navbar height */
 }
+
+@media (max-width: 768px) {
+  .main {
+    padding: 16px;
+    padding-bottom: 80px; /* Accounts for bottom tab bar */
+  }
+}
