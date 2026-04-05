@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { sendWelcomeEmail } from "../../utils/emailService";
 import styles from "../Login/Login.module.css"; // Reuse login styles for consistency
 
 const SignUp = () => {
@@ -19,6 +20,8 @@ const SignUp = () => {
 
         try {
             await signUp(email, password, studioName);
+            // Send welcome email — non-blocking, fire and forget
+            sendWelcomeEmail(studioName, email);
             navigate("/pending");
         } catch (err) {
             setError(err.message || "Failed to create account");

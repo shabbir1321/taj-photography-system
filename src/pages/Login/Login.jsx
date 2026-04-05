@@ -7,7 +7,7 @@ import styles from "./Login.module.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { user, loginAsDemo, loginWithEmail } = useAuth();
+  const { user, profile, loginAsDemo, loginWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,14 +15,16 @@ const Login = () => {
 
   // If already logged in, send to dashboard directly
   useEffect(() => {
-    if (user) {
-      if (user.email === "admin@studio.com") {
+    if (user && profile) {
+      if (profile.isAdmin || user.email === "admin@studio.com") {
         navigate("/admin");
+      } else if (profile.status === "pending") {
+        navigate("/pending");
       } else {
         navigate("/");
       }
     }
-  }, [user, navigate]);
+  }, [user, profile, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,16 +33,10 @@ const Login = () => {
 
     try {
       await loginWithEmail(email, password);
-      // Success is handled by state updates in context
-      if (email === "admin@studio.com") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      // Success is handled by state updates in context driving the useEffect above
     } catch (err) {
       setError("Invalid email or password");
-    } finally {
-      setLoading(false);
+      setLoading(false); // Only unset loading on error, wait for redirect on success
     }
   };
 

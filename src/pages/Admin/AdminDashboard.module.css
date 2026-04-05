@@ -281,3 +281,29 @@
     font-size: 11px !important;
     opacity: 0.6;
 }
+
+/* Actions Group in Table Rows */
+.actionsGroup {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.deleteBtn {
+    padding: 7px 10px;
+    background: rgba(255, 71, 87, 0.08);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.deleteBtn:hover {
+    background: rgba(255, 71, 87, 0.2);
+    border-color: #ff4757;
+    transform: scale(1.05);
+}

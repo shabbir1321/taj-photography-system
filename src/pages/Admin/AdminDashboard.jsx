@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, doc, updateDoc, query, orderBy, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, query, orderBy, setDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { useAuth } from "../../context/AuthContext";
+import { sendApprovalEmail } from "../../utils/emailService";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
@@ -86,18 +87,33 @@ const AdminDashboard = () => {
         }
     };
 
-    const toggleApproval = async (userId, currentStatus) => {
+    const toggleApproval = async (userId, currentStatus, studioName, email) => {
         const newStatus = currentStatus === "active" ? "pending" : "active";
         try {
             await updateDoc(doc(db, "profiles", userId), {
                 status: newStatus
             });
-            alert(`User status updated to ${newStatus}`);
+            // Send approval email only when activating (not revoking)
+            if (newStatus === "active") {
+                sendApprovalEmail(studioName || "Photographer", email);
+            }
         } catch (error) {
             console.error("Update error:", error);
             alert("Failed to update user status.");
         }
     };
+
+    const handleDeleteUser = async (userId, email) => {
+        const confirmed = window.confirm(`Are you sure you want to permanently delete the account for "${email}"? This cannot be undone.`);
+        if (!confirmed) return;
+        try {
+            await deleteDoc(doc(db, "profiles", userId));
+        } catch (error) {
+            console.error("Delete error:", error);
+            alert("Failed to delete user. Check permissions.");
+        }
+    };
+
 
     if (!profile?.isAdmin) {
         return <div className={styles.error}>Access Denied. Admins Only.</div>;
@@ -189,12 +205,21 @@ const AdminDashboard = () => {
                                     {user.isAdmin ? (
                                         <span className={styles.adminLabel}>MASTER ADMIN</span>
                                     ) : (
-                                        <button 
-                                            className={user.status === "active" ? styles.revokeBtn : styles.approveBtn}
-                                            onClick={() => toggleApproval(user.id, user.status)}
-                                        >
-                                            {user.status === "active" ? "REVOKE" : "APPROVE"}
-                                        </button>
+                                        <div className={styles.actionsGroup}>
+                                            <button 
+                                                className={user.status === "active" ? styles.revokeBtn : styles.approveBtn}
+                                                onClick={() => toggleApproval(user.id, user.status, user.studioName, user.email)}
+                                            >
+                                                {user.status === "active" ? "REVOKE" : "APPROVE"}
+                                            </button>
+                                            <button 
+                                                className={styles.deleteBtn}
+                                                onClick={() => handleDeleteUser(user.id, user.email)}
+                                                title="Delete Account"
+                                            >
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            </button>
+                                        </div>
                                     )}
                                 </td>
                             </tr>
